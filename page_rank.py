@@ -14,12 +14,35 @@ def load_graph(args):
     Returns:
     A dict mapling a URL (str) to a list of target URLs (str).
     """
+
+    data = ()
+    with open("school_web.txt","rb") as f:
+        for l in f:
+            parts = l.strip().split()
+            try:
+                data.append(parts[0],parts[1])
+                node = data[0]
+                target = data[1]
+                for line in data:
+                # And split each line into two URLs
+                    node, target = line.split()
+                    mydict = dict(node, target)
+                    raise RuntimeError("This function is not implemented yet.")
+            except:
+                pass
+    return mydict
+
+
+
+
+
+"""  
     # Iterate through the file line by line
     for line in args.datafile:
         # And split each line into two URLs
         node, target = line.split()
         raise RuntimeError("This function is not implemented yet.")
-
+"""
 
 def print_stats(graph):
         """Print number of nodes and edges in the given graph"""
