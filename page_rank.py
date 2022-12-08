@@ -39,7 +39,12 @@ def load_graph(args):
 """
 
 def print_stats(graph):
-        print()
+        g = graph
+        count = 0
+        nodec =len(g)
+        for node in g:
+          count += len(g[node])
+        print("node", nodec,"edges", count)
         """Print number of nodes and edges in the given graph"""
         raise RuntimeError("This function is not implemented yet.")
 
