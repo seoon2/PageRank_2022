@@ -18,11 +18,10 @@ def load_graph(args):
     for line in args.datafile:
         # And split each line into two URLs
         node, target = line.split()
-        list = []
-        append = list.append
+        target_list = []
         if node not in g:
-            append(target)
-            g[node] = list
+            target_list.append(target)
+            g[node] = target_list
         else:
             g[node].append(target)
     return g
