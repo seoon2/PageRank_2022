@@ -1,8 +1,8 @@
 import sys
-import os
 import time
 import argparse
 from progress import Progress
+import random
 
 
 def load_graph(args):
@@ -19,34 +19,25 @@ def load_graph(args):
     for line in args.datafile:
         # And split each line into two URLs
         node, target = line.split()
+        list = []
+        append = list.append
         if node not in g:
-            list = []
-            list.append(target)
+            append(target)
             g[node] = list
-        elif node in g:
+        else:
             g[node].append(target)
     return g
 
 
-
-
-"""  
-    # Iterate through the file line by line
-    for line in args.datafile:
-        # And split each line into two URLs
-        node, target = line.split()
-        raise RuntimeError("This function is not implemented yet.")
-"""
-
 def print_stats(graph):
-        g = graph
-        count = 0
-        nodec =len(g)
-        for node in g:
-          count += len(g[node])
-        print("node", nodec,"edges", count)
-        """Print number of nodes and edges in the given graph"""
-        raise RuntimeError("This function is not implemented yet.")
+    """Print number of nodes and edges in the given graph"""
+    e_count = 0
+    # count number of nodes
+    n_count = len(graph)
+    # count number of edges
+    for node in graph:
+        e_count += len(graph[node])
+    print("number of nodes:", n_count, "number of edges:", e_count)
 
 
 def stochastic_page_rank(graph, args):
@@ -63,7 +54,27 @@ def stochastic_page_rank(graph, args):
     a random walk that starts on a random node will after n_steps end
     on each node of the given graph.
     """
-    raise RuntimeError("This function is not implemented yet.")
+
+    n_repetitions = args.repeats
+    n_steps = args.steps
+    # initialize hit_count[node] with 0 for all nodes
+    hit_count = {node: 0 for node in graph}
+
+    # repeat n_repetitions times:
+    for j in range(n_repetitions):
+        # current_node <- randomly selected node
+        current_node = random.choice(list(graph))
+        # repeat n_steps times:
+        for i in range(n_steps):
+            # current_node <- uniformly randomly chosen among the out edges of current_node
+            current_node = random.choice(graph[current_node])
+            if current_node not in graph:
+                break
+        # hit_count[current_node] += 1 / n_repetitions
+        hit_count[current_node] += 1 / n_repetitions
+    return hit_count
+
+
 
 
 def distribution_page_rank(graph, args):
@@ -78,8 +89,30 @@ def distribution_page_rank(graph, args):
 
     This function estimates the Page Rank by iteratively calculating
     the probability that a random walker is currently on any node.
+
     """
-    raise RuntimeError("This function is not implemented yet.")
+    n_steps = args.steps
+    # initialize node_prob[node] = 1/(number of nodes) for all nodes
+    node_prob = {node: 1 / len(graph) for node in graph}
+
+    # repeat n_steps times:
+    for i in range(n_steps):
+        #  initialize next_prob[node] = 0 for all nodes
+        next_prob = {node: 0 for node in graph}
+        # for each node:
+        for node in graph:
+            # p <- node_prob[node] divided by its out degree
+            p = node_prob[node] / (len(graph[node]))
+            # for each target among out edges of node:
+            for target in graph[node]:
+                # next_prob[target] += p
+                next_prob[target] += p
+        # node_prob <- next_prob
+        node_prob = next_prob
+    # return
+    return node_prob
+
+
 
 
 parser = argparse.ArgumentParser(description="Estimates page ranks from link information")
